@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct EconomicDataApp: App {
+    @StateObject var seriesInfo = DataSeriesGraph()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SeriesSelectionView()
+                .environmentObject(seriesInfo)
         }
     }
 }
