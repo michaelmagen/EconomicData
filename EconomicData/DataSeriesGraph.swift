@@ -92,14 +92,14 @@ class DataSeriesGraph: ObservableObject {
 //    }
 }
 
-extension RawDataSeries {
-    var graphableData: [identifiableDataTuple] {
-        let array = Array(zip(data.values, data.dates))
-        return array.map { value, date in
-            identifiableDataTuple(value: value, date: date)
-        }
-    }
-}
+//extension RawDataSeries {
+//    var graphableData: [identifiableDataTuple] {
+//        let array = Array(zip(data.values, data.dates))
+//        return array.map { value, date in
+//            identifiableDataTuple(value: value, date: date)
+//        }
+//    }
+//}
 
 
 

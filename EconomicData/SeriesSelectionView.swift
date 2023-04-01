@@ -13,7 +13,7 @@ struct SeriesSelectionView: View {
     var body: some View {
         NavigationView {
             List(allSeriesDataStore.listData) { series in
-                NavigationLink(destination: GraphView(seriesData: series)) {
+                NavigationLink(destination: GraphView(seriesData: SeriesGraph(rawDataSeries: series))) {
                     seriesListItem(ticker: series.ticker, description: series.description)
                 }
             }

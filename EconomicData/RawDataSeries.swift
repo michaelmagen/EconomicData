@@ -17,10 +17,11 @@ struct RawDataSeries: Codable, Identifiable {
     let frequency: String
     let ticker: String
     let geography: String
+    let units: String?
     let data: RawDataValues
     
     private enum CodingKeys: String, CodingKey {
-        case description, frequency, ticker, geography, data
+        case description, frequency, ticker, geography, data, units
     }
 }
 
@@ -37,5 +38,26 @@ struct RawDataValues: Codable, Identifiable {
 struct identifiableDataTuple: Identifiable {
     let id = UUID()
     let value: Double
-    let date: String
+    let dateString: String
+    let date: Date?
+    
+    init(value: Double, dateString: String) {
+        self.value = value
+        
+        // format the data string
+        let components = dateString.components(separatedBy: "-")
+        let year = components[0]
+        let month = components[1]
+        self.dateString = "\(month)/\(year)"
+        
+        
+        // get the Date from the date string
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if let date = dateFormatter.date(from: dateString) {
+            self.date = date
+        } else {
+            self.date = nil
+        }
+    }
 }

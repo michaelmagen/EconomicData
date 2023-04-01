@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct GraphView: View {
-    @State var seriesData: RawDataSeries
+    @State var seriesData: SeriesGraph
 
     @State private var showSelectionBar = false
 
@@ -23,14 +23,23 @@ struct GraphView: View {
 
     var body: some View {
         VStack {
+            Button {
+                seriesData.goToNextSliceOfData()
+            } label: {
+                Text("Next")
+            }
+            if let minDate = seriesData.earliestDate {
+                Text("Date Range: \(minDate)")
+            }
             Chart {
-                ForEach(seriesData.graphableData) { item in
+                ForEach(seriesData.currentDataSliceDisplayed) { item in
                     LineMark(
-                        x: .value("Date", item.date),
+                        x: .value("Date", item.dateString),
                         y: .value("Value", item.value)
                     )
                 }
             }
+            .navigationBarTitle(Text(seriesData.description), displayMode: .inline)
             .frame(height: 400)
             // this line removes the X axis from the graph
             .chartXAxis {}
@@ -77,7 +86,8 @@ struct GraphView: View {
                                 }
 
                                 let (date, _) = pr.value(at: location, as: (String, Int).self) ?? ("-", 0)
-                                let pointValue = seriesData.graphableData.first(where: {$0.date == date})?.value ?? 0
+                                
+                                let pointValue = seriesData.graphableData.first(where: {$0.dateString == date})?.value ?? 0
                                 selectedValue = pointValue
                                 selectedDate = date
 
