@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class SeriesGraph {
+class SeriesGraph: ObservableObject {
     
     init(rawDataSeries: RawDataSeries) {
         self.rawDataSeries = rawDataSeries
@@ -29,22 +29,15 @@ class SeriesGraph {
 //        self.stringDatesMonthYearOnly = monthYearStrings
         //let numberOfGraphsToCreate = graphableData.count / 100
         //print("this data is being split into \(numberOfGraphsToCreate) graphs")
-        self.setsOfGraphableData = graphableData.chunked(into: 120)
         
-        self.indexOfSelectedDataSlice = 0
+        // this is not needed, runs fine on phone, only runs slow on simulator
+        //self.setsOfGraphableData = graphableData.chunked(into: 1000)
     }
     
     private var rawDataSeries: RawDataSeries
     
     var graphableData: [identifiableDataTuple]
-    
-    @Published var setsOfGraphableData: [[identifiableDataTuple]]
-    
-    @Published var indexOfSelectedDataSlice: Int
-    
-    var currentDataSliceDisplayed: [identifiableDataTuple] {
-        setsOfGraphableData[indexOfSelectedDataSlice]
-    }
+
 //    private var DateData: [Date] {
 //        let dateFormatter = DateFormatter()
 //        dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -80,13 +73,9 @@ class SeriesGraph {
     }
     
     // MARK: INTENT
-    
-    func goToNextSliceOfData() {
-        indexOfSelectedDataSlice += 1
-    }
 }
 
-
+// used to chunk an array into seperate array of specified size
 extension Array {
     func chunked(into size: Int) -> [[Element]] {
         return stride(from: 0, to: count, by: size).map {
