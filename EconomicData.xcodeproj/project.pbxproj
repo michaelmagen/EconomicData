@@ -27,6 +27,7 @@
 		7A0E031C29D4B04F009E1E32 /* DataSeriesGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSeriesGraph.swift; sourceTree = "<group>"; };
 		7A0E031E29D6164D009E1E32 /* SeriesSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesSelectionView.swift; sourceTree = "<group>"; };
 		7A0E032029D7531D009E1E32 /* SeriesGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGraph.swift; sourceTree = "<group>"; };
+		7AABF35D29DCA3D5007E623F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +60,7 @@
 		7A0E030B29D4AE46009E1E32 /* EconomicData */ = {
 			isa = PBXGroup;
 			children = (
+				7AABF35D29DCA3D5007E623F /* Info.plist */,
 				7A0E030C29D4AE46009E1E32 /* EconomicDataApp.swift */,
 				7A0E031E29D6164D009E1E32 /* SeriesSelectionView.swift */,
 				7A0E032029D7531D009E1E32 /* SeriesGraph.swift */,
@@ -286,7 +288,7 @@
 				DEVELOPMENT_TEAM = VLT75W44MK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = EconomicData/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -315,7 +317,7 @@
 				DEVELOPMENT_TEAM = VLT75W44MK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = EconomicData/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

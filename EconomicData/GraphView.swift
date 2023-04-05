@@ -23,9 +23,21 @@ struct GraphView: View {
     
     var body: some View {
         VStack {
-            if let minDate = seriesData.earliestDate {
-                Text("Date Range: \(minDate)")
+            Text(seriesData.description)
+                .font(.title)
+                .padding(.bottom)
+            VStack(alignment: .leading) {
+                HStack {
+                    GraphDetailItem(header: "Frequency", text: seriesData.frequency)
+                    Spacer()
+                    GraphDetailItem(header: "Geography", text: seriesData.geography)
+                }
+                .padding(.bottom)
+                GraphDetailItem(header: "Date Range", text: "\(seriesData.earliestDate) - \(seriesData.latestDate)")
+                
             }
+            .padding(.horizontal, 30)
+            Spacer()
             Chart {
                 ForEach(seriesData.graphableData) { item in
                     LineMark(
@@ -35,14 +47,17 @@ struct GraphView: View {
                 }
                 
             }
-            .navigationBarTitle(Text(seriesData.description), displayMode: .inline)
+            .navigationBarTitle(seriesData.ticker, displayMode: .inline)
             .frame(height: 400)
             // this line removes the X axis from the graph
-            .chartXAxis {}
+            .chartXAxis {
+                AxisMarks(values: seriesData.xAxisStrings)
+            }
             .chartOverlay { pr in
                 chartOverlay(pr: pr)
             }
             .padding()
+            Spacer()
         }
     }
     
@@ -112,6 +127,18 @@ struct GraphView: View {
     
 }
 
+struct GraphDetailItem: View {
+    var header: String
+    var text: String
+    
+    var body: some View  {
+        VStack(alignment: .leading) {
+            Text(header)
+                .foregroundColor(.gray)
+            Text(text)
+        }
+    }
+}
 
 //struct GraphView_Previews: PreviewProvider {
 //    static var previews: some View {

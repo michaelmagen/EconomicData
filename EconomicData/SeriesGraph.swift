@@ -37,27 +37,27 @@ class SeriesGraph: ObservableObject {
     private var rawDataSeries: RawDataSeries
     
     var graphableData: [identifiableDataTuple]
-
-//    private var DateData: [Date] {
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd"
-//        let dateStringArray = rawDataSeries.data.dates
-//
-//        var yearMonthArray = [Date]()
-//        for dateString in dateStringArray {
-//            if let date = dateFormatter.date(from: dateString) {
-//                let calendar = Calendar.current
-//                let components = calendar.dateComponents([.year, .month], from: date)
-//                if let yearMonthDate = calendar.date(from: components) {
-//                    yearMonthArray.append(yearMonthDate)
-//                }
-//            }
-//        }
-//        return yearMonthArray
-//    }
+    
+    var ticker: String {
+        rawDataSeries.ticker
+    }
     
     var description: String {
-        rawDataSeries.description
+        let components = rawDataSeries.description.components(separatedBy: "-")
+        return components[1]
+    }
+    
+    var frequency: String {
+        switch rawDataSeries.frequency{
+        case "Q":
+            return "Quarterly"
+        default:
+            return "Monthly"
+        }
+    }
+    
+    var geography: String {
+        rawDataSeries.geography
     }
     
     var earliestDate: String {
@@ -71,6 +71,43 @@ class SeriesGraph: ObservableObject {
             return "Err"
         }
     }
+    
+    var latestDate: String {
+        let dateData = graphableData.compactMap { $0.date }
+        //Calendar.current.dateComponents([.day, .year, .month], from: date)
+        if let maxDate = dateData.max() {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMMM yyyy"
+            return dateFormatter.string(from: maxDate)
+        } else {
+            return "Err"
+        }
+    }
+
+    // TODO: remove as many computed values as possible since these are recomputed everytime
+    var xAxisStrings: [String] {
+        let dateStrings = graphableData.map { $0.dateString }
+        return selectDataPoints(dateStrings, n: 5)
+    }
+    
+    func selectDataPoints(_ data: [String], n: Int) -> [String] {
+        let count = data.count
+        let stride = Double(count) / Double(n)
+        //var index = 0
+        var result: [String] = []
+        
+        for i in 0..<n {
+            let newIndex = Int(Double(i) * stride)
+            if newIndex >= count {
+                break
+            }
+            result.append(data[newIndex])
+        }
+        
+        return result
+    }
+    
+    
     
     // MARK: INTENT
 }
