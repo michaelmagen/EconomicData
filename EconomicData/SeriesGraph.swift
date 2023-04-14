@@ -16,22 +16,6 @@ class SeriesGraph: ObservableObject {
         self.graphableData = array.map { value, date in
             identifiableDataTuple(value: value, dateString: date)
         }
-        
-//        // convert the raw string to only include month and year
-//        var monthYearStrings = [String]()
-//        for dateString in rawDataSeries.data.dates {
-//            let components = dateString.components(separatedBy: "-")
-//            let year = components[0]
-//            let month = components[1]
-//            let monthYearString = "\(month)/\(year)"
-//            monthYearStrings.append(monthYearString)
-//        }
-//        self.stringDatesMonthYearOnly = monthYearStrings
-        //let numberOfGraphsToCreate = graphableData.count / 100
-        //print("this data is being split into \(numberOfGraphsToCreate) graphs")
-        
-        // this is not needed, runs fine on phone, only runs slow on simulator
-        //self.setsOfGraphableData = graphableData.chunked(into: 1000)
     }
     
     private var rawDataSeries: RawDataSeries
@@ -87,7 +71,10 @@ class SeriesGraph: ObservableObject {
     // TODO: remove as many computed values as possible since these are recomputed everytime
     var xAxisStrings: [String] {
         let dateStrings = graphableData.map { $0.dateString }
-        return selectDataPoints(dateStrings, n: 5)
+        // select 5 data points from the strings
+        let dataPoints =  selectDataPoints(dateStrings, n: 5)
+        // drop the first data point and keep the other 4 since the first is not needed
+        return Array(dataPoints.dropFirst())
     }
     
     func selectDataPoints(_ data: [String], n: Int) -> [String] {
@@ -105,18 +92,5 @@ class SeriesGraph: ObservableObject {
         }
         
         return result
-    }
-    
-    
-    
-    // MARK: INTENT
-}
-
-// used to chunk an array into seperate array of specified size
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
-        }
     }
 }

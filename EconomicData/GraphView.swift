@@ -47,11 +47,20 @@ struct GraphView: View {
                 }
                 
             }
+            .padding(.leading)
             .navigationBarTitle(seriesData.ticker, displayMode: .inline)
-            .frame(height: 400)
             // this line removes the X axis from the graph
             .chartXAxis {
-                AxisMarks(values: seriesData.xAxisStrings)
+                AxisMarks(preset: .aligned ,values: seriesData.xAxisStrings)
+            }
+            .chartYAxis {
+                AxisMarks(values: .automatic) { value in
+                    if let val = value.as(Double.self) {
+                        AxisValueLabel { Text(formatYAxisValues(value: val)) }
+                    }
+                    AxisGridLine()
+                    AxisTick()
+                }
             }
             .chartOverlay { pr in
                 chartOverlay(pr: pr)
@@ -125,6 +134,33 @@ struct GraphView: View {
             }
     }
     
+    // this function takes the double that will be the axis value and properly formats it into a string that is smaller and indicates the unit of value.
+    func formatYAxisValues(value: Double) -> String {
+        // initialize the number formatter
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 3
+        formatter.numberStyle = .decimal
+        
+        // we take each number and divide by unit to make it smaller, then add a letter indicating the unit for that number (trillion, billion, million, thousand, or percentage).
+        if value >= 1000000000000 {
+            let number = value / 1000000000000
+            return formatter.string(from: NSNumber(value: number))! + "T"
+        } else if value >= 1000000000 {
+            let number = value / 1000000000
+            return formatter.string(from: NSNumber(value: number))! + "B"
+        } else if value >= 1000000 {
+            let number = value / 1000000
+            return formatter.string(from: NSNumber(value: number))! + "M"
+        } else if value >= 1000 {
+            let number = value / 1000
+            return formatter.string(from: NSNumber(value: number))! + "K"
+        } else if value <= 100 && false {
+            formatter.numberStyle = .percent
+            return formatter.string(from: NSNumber(value: value))!
+        }
+        
+        return formatter.string(from: NSNumber(value: value))!
+    }
 }
 
 struct GraphDetailItem: View {
@@ -137,20 +173,5 @@ struct GraphDetailItem: View {
                 .foregroundColor(.gray)
             Text(text)
         }
-    }
-}
-
-//struct GraphView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        GraphView(viewModel: DataSeriesGraph() )
-//    }
-//}
-
-
-extension Double {
-    /// Rounds the double to decimal places value
-    func rounded(toPlaces places:Int) -> Double {
-        let divisor = pow(10.0, Double(places))
-        return (self * divisor).rounded() / divisor
     }
 }
