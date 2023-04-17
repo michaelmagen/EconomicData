@@ -11,7 +11,11 @@ import Charts
 struct GraphView: View {
     @ObservedObject var seriesData: SeriesGraph
     
-    @State private var showSelectionBar = false
+    @State private var isDragging = false
+    
+    private var showSelectionBarAndValues: Bool {
+        isDragging && selectedDate != "-"
+    }
     
     @State private var barOffsetX = 0.0
     
@@ -70,7 +74,7 @@ struct GraphView: View {
             Rectangle()
                 .foregroundStyle(.orange.gradient)
                 .frame(width: 2, height: geoProxy.size.height * 0.97)
-                .opacity(showSelectionBar ? 1.0 : 0.0)
+                .opacity(showSelectionBarAndValues ? 1.0 : 0.0)
                 .offset(x: barOffsetX)
 
             Rectangle().fill(.clear).contentShape(Rectangle())
@@ -79,7 +83,7 @@ struct GraphView: View {
             Text("\(selectedDate): \(formatSelectedValue(value: selectedValue))")
                 .offset(y: -20)
                 .foregroundStyle(.orange.gradient)
-                .opacity(showSelectionBar ? 1 : 0)
+                .opacity(showSelectionBarAndValues ? 1 : 0)
                 .font(.footnote)
         }
     }
@@ -87,8 +91,8 @@ struct GraphView: View {
     func graphDragGesture(pr: ChartProxy, geoProxy: GeometryProxy) -> some Gesture {
         return DragGesture()
             .onChanged { value in
-                if !showSelectionBar {
-                    showSelectionBar = true
+                if !isDragging {
+                    isDragging = true
                 }
                 let origin = geoProxy[pr.plotAreaFrame].origin
                 let location = CGPoint(x: value.location.x - origin.x, y: value.location.y - origin.y)
@@ -103,7 +107,7 @@ struct GraphView: View {
                 selectedDate = date
             }
             .onEnded { _ in
-                showSelectionBar = false
+                isDragging = false
             }
     }
     
