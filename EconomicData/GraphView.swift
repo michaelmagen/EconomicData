@@ -15,9 +15,6 @@ struct GraphView: View {
     
     @State private var barOffsetX = 0.0
     
-    @State private var capsuleOffsetX = 0.0
-    @State private var capsuleOffsetY = 0.0
-    
     @State private var selectedDate = ""
     @State private var selectedValue = 0.0
     
@@ -45,9 +42,8 @@ struct GraphView: View {
                         y: .value("Value", item.value)
                     )
                 }
-                
             }
-            .padding(.leading)
+            // to add leading padding need to move graph to its own struct ???
             .navigationBarTitle(seriesData.ticker, displayMode: .inline)
             // this line removes the X axis from the graph
             .chartXAxis {
@@ -66,7 +62,6 @@ struct GraphView: View {
                 chartOverlay(pr: pr)
             }
             .padding()
-            Spacer()
         }
     }
     
@@ -74,29 +69,19 @@ struct GraphView: View {
         return GeometryReader { geoProxy in
             Rectangle()
                 .foregroundStyle(.orange.gradient)
-                .frame(width: 2, height: geoProxy.size.height )//* 0.95)
+                .frame(width: 2, height: geoProxy.size.height * 0.97)
                 .opacity(showSelectionBar ? 1.0 : 0.0)
                 .offset(x: barOffsetX)
-            Capsule()
-                .foregroundStyle(.orange.gradient)
-                .frame(width: 100, height: 50)
-                .overlay {
-                    capsuleOverlay
-                }
-                .opacity(showSelectionBar ? 1.0 : 0.0)
-                .offset(x: capsuleOffsetX - 50, y: capsuleOffsetY - 50)
+
             Rectangle().fill(.clear).contentShape(Rectangle())
                 .gesture(graphDragGesture(pr: pr, geoProxy: geoProxy))
+            
+            Text("\(selectedDate): \(formatSelectedValue(value: selectedValue))")
+                .offset(y: -20)
+                .foregroundStyle(.orange.gradient)
+                .opacity(showSelectionBar ? 1 : 0)
+                .font(.footnote)
         }
-    }
-    
-    var capsuleOverlay: some View {
-        VStack {
-            Text("\(String(format: "%.2f", selectedValue))%")
-            Text("\(selectedDate)")
-        }
-        .font(.body)
-        .foregroundStyle(.white.gradient)
     }
     
     func graphDragGesture(pr: ChartProxy, geoProxy: GeometryProxy) -> some Gesture {
@@ -108,26 +93,14 @@ struct GraphView: View {
                 let origin = geoProxy[pr.plotAreaFrame].origin
                 let location = CGPoint(x: value.location.x - origin.x, y: value.location.y - origin.y)
                 
-                if location.x < 35.0 {
-                    capsuleOffsetX = 35.0
-                } else if location.x > 325 {
-                    capsuleOffsetX = 325.0
-                } else {
-                    capsuleOffsetX = location.x
-                }
+                // update bar location
                 barOffsetX = location.x
-                // the height of the whole chart is 400, pill is 50 hieght so this ensures pill always inside the graph no matter the offset
-                if location.y > 50 && location.y < 400 {
-                    capsuleOffsetY = location.y
-                }
                 
                 let (date, _) = pr.value(at: location, as: (String, Int).self) ?? ("-", 0)
                 
                 let pointValue = seriesData.graphableData.first(where: {$0.dateString == date})?.value ?? 0
                 selectedValue = pointValue
                 selectedDate = date
-                
-                // this is the bottom of the gesture
             }
             .onEnded { _ in
                 showSelectionBar = false
@@ -135,7 +108,7 @@ struct GraphView: View {
     }
     
     // this function takes the double that will be the axis value and properly formats it into a string that is smaller and indicates the unit of value.
-    func formatYAxisValues(value: Double) -> String {
+    private func formatYAxisValues(value: Double) -> String {
         // initialize the number formatter
         let formatter = NumberFormatter()
         formatter.maximumFractionDigits = 3
@@ -160,6 +133,15 @@ struct GraphView: View {
         }
         
         return formatter.string(from: NSNumber(value: value))!
+    }
+    
+    private func formatSelectedValue(value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 0
+        
+        return formatter.string(from: NSNumber(value: value)) ?? ""
     }
 }
 
