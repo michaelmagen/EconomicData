@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Charts
 
 struct SeriesDetailView: View {
     @ObservedObject var seriesData: SeriesGraph
@@ -18,12 +17,12 @@ struct SeriesDetailView: View {
                 .padding(.bottom)
             VStack(alignment: .leading) {
                 HStack {
-                    GraphDetailItem(header: "Frequency", text: seriesData.frequency)
+                    InfoDetailItem(header: "Frequency", text: seriesData.frequency)
                     Spacer()
-                    GraphDetailItem(header: "Geography", text: seriesData.geography)
+                    InfoDetailItem(header: "Geography", text: seriesData.geography)
                 }
                 .padding(.bottom)
-                GraphDetailItem(header: "Date Range", text: "\(seriesData.earliestDate) - \(seriesData.latestDate)")
+                InfoDetailItem(header: "Date Range", text: "\(seriesData.earliestDate) - \(seriesData.latestDate)")
                 
             }
             .padding(.horizontal, 30)
@@ -35,7 +34,7 @@ struct SeriesDetailView: View {
     }
 }
 
-struct GraphDetailItem: View {
+struct InfoDetailItem: View {
     var header: String
     var text: String
     

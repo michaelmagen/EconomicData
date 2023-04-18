@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SeriesSelectionView: View {
-    @EnvironmentObject var allSeriesDataStore: DataSeriesGraph
+    @EnvironmentObject var allSeriesDataStore: DataFetcher
     
     var body: some View {
         NavigationView {

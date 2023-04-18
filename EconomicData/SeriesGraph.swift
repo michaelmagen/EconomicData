@@ -32,7 +32,7 @@ class SeriesGraph: ObservableObject {
     }
     
     var frequency: String {
-        switch rawDataSeries.frequency{
+        switch rawDataSeries.frequency {
         case "Q":
             return "Quarterly"
         default:
@@ -68,7 +68,6 @@ class SeriesGraph: ObservableObject {
         }
     }
 
-    // TODO: remove as many computed values as possible since these are recomputed everytime
     var xAxisStrings: [String] {
         let dateStrings = graphableData.map { $0.dateString }
         // select 5 data points from the strings
@@ -77,6 +76,7 @@ class SeriesGraph: ObservableObject {
         return Array(dataPoints.dropFirst())
     }
     
+    // select n points of data from the input. Will select  data[0] + (n - 1) items spaced out evenly.
     func selectDataPoints(_ data: [String], n: Int) -> [String] {
         let count = data.count
         let stride = Double(count) / Double(n)
