@@ -19,7 +19,7 @@ struct SeriesSelectionView: View {
                 }
                 else {
                     List(allSeriesDataStore.listData) { series in
-                        NavigationLink(destination: GraphView(seriesData: SeriesGraph(rawDataSeries: series))) {
+                        NavigationLink(destination: SeriesDetailView(seriesData: SeriesGraph(rawDataSeries: series))) {
                             seriesListItem(ticker: series.ticker, description: series.description)
                         }
                     }

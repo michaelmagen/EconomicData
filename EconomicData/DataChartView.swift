@@ -1,72 +1,56 @@
 //
-//  ContentView.swift
+//  DataChartView.swift
 //  EconomicData
 //
-//  Created by Michael Magen on 3/29/23.
+//  Created by Michael Magen on 4/17/23.
 //
 
 import SwiftUI
 import Charts
 
-struct GraphView: View {
+struct DataChartView: View {
     @ObservedObject var seriesData: SeriesGraph
-    
+
     @State private var isDragging = false
-    
+
     private var showSelectionBarAndValues: Bool {
         isDragging && selectedDate != "-"
     }
-    
+
     @State private var barOffsetX = 0.0
-    
+
     @State private var selectedDate = ""
     @State private var selectedValue = 0.0
-    
+
     var body: some View {
-        VStack {
-            Text(seriesData.description)
-                .font(.title)
-                .padding(.bottom)
-            VStack(alignment: .leading) {
-                HStack {
-                    GraphDetailItem(header: "Frequency", text: seriesData.frequency)
-                    Spacer()
-                    GraphDetailItem(header: "Geography", text: seriesData.geography)
-                }
-                .padding(.bottom)
-                GraphDetailItem(header: "Date Range", text: "\(seriesData.earliestDate) - \(seriesData.latestDate)")
-                
+        Chart {
+            ForEach(seriesData.graphableData) { item in
+                LineMark(
+                    x: .value("Date", item.dateString),
+                    y: .value("Value", item.value)
+                )
             }
-            .padding(.horizontal, 30)
-            Spacer()
-            Chart {
-                ForEach(seriesData.graphableData) { item in
-                    LineMark(
-                        x: .value("Date", item.dateString),
-                        y: .value("Value", item.value)
-                    )
-                }
-            }
-            // to add leading padding need to move graph to its own struct ???
-            .navigationBarTitle(seriesData.ticker, displayMode: .inline)
-            // this line removes the X axis from the graph
-            .chartXAxis {
-                AxisMarks(preset: .aligned ,values: seriesData.xAxisStrings)
-            }
-            .chartYAxis {
-                AxisMarks(values: .automatic) { value in
-                    if let val = value.as(Double.self) {
-                        AxisValueLabel { Text(formatYAxisValues(value: val)) }
-                    }
-                    AxisGridLine()
-                    AxisTick()
-                }
-            }
-            .chartOverlay { pr in
-                chartOverlay(pr: pr)
-            }
-            .padding()
         }
+        // to add leading padding need to move graph to its own struct ???
+        //.navigationBarTitle(seriesData.ticker, displayMode: .inline)
+        // this line removes the X axis from the graph
+        .chartXAxis {
+            AxisMarks(preset: .aligned ,values: seriesData.xAxisStrings)
+        }
+        .chartYAxis {
+            AxisMarks(values: .automatic) { value in
+                if let val = value.as(Double.self) {
+                    AxisValueLabel { Text(formatYAxisValues(value: val)) }
+                }
+                AxisGridLine()
+                AxisTick()
+            }
+        }
+        .chartOverlay { pr in
+            chartOverlay(pr: pr)
+        }
+        .padding()
+
     }
     
     func chartOverlay(pr: ChartProxy) -> some View {
@@ -146,18 +130,5 @@ struct GraphView: View {
         formatter.minimumFractionDigits = 0
         
         return formatter.string(from: NSNumber(value: value)) ?? ""
-    }
-}
-
-struct GraphDetailItem: View {
-    var header: String
-    var text: String
-    
-    var body: some View  {
-        VStack(alignment: .leading) {
-            Text(header)
-                .foregroundColor(.gray)
-            Text(text)
-        }
     }
 }
