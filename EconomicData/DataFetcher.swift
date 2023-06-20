@@ -10,15 +10,37 @@ import SwiftUI
 class DataFetcher: ObservableObject {
     
     init() {
+        // Declare a state variable to track the data fetch state
+        self.fetchState =  .loading
+        self.fetchData()
+    }
+    
+    @Published var allSeriesData: AllDataSeries?
+    
+    @Published var fetchState: DataFetchState
+    
+    // Define an enum to represent the different states
+    enum DataFetchState {
+        case loading
+        case success
+        case failure
+    }
+    
+    func fetchData() {
+        // update fetch state to reflect attempt to fetch data
+        self.fetchState =  .loading
+        
         // get the data from the public API
-        // TODO: Handle errors when unable to fetch data
         let url = URL(string: "https://www.econdb.com/api/series/?tickers=CPIUS,URATEUS,RGDPUS,IPUS,GDEBTUS,RPUCUS,RPRCUS,GDPUS,HOUUS,PPIUS&format=json")
         
         let urlRequst = URLRequest(url: url!)
         
         let dataTask = URLSession.shared.dataTask(with: urlRequst) { (data, response, error) in
-            if let error = error {
-                print("Request error: ", error)
+            if error != nil {
+                // update fetchState on main thread
+                DispatchQueue.main.async {
+                    self.fetchState = .failure
+                }
                 return
             }
             
@@ -30,8 +52,9 @@ class DataFetcher: ObservableObject {
                     do {
                         let decodedData = try JSONDecoder().decode(AllDataSeries.self, from: data)
                         self.allSeriesData = decodedData
-                    } catch let error {
-                        print("Error decoding: ", error)
+                        self.fetchState = .success
+                    } catch _ {
+                        self.fetchState = .failure
                     }
                 }
             }
@@ -39,8 +62,6 @@ class DataFetcher: ObservableObject {
         
         dataTask.resume()
     }
-    
-    @Published var allSeriesData: AllDataSeries?
     
     // data for displaying in navigation list
     var listData: [RawDataSeries] {

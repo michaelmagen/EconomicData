@@ -31,9 +31,6 @@ struct DataChartView: View {
                 )
             }
         }
-        // to add leading padding need to move graph to its own struct ???
-        //.navigationBarTitle(seriesData.ticker, displayMode: .inline)
-        // this line removes the X axis from the graph
         .chartXAxis {
             AxisMarks(preset: .aligned ,values: seriesData.xAxisStrings)
         }

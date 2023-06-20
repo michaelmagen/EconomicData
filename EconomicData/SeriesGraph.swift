@@ -46,7 +46,6 @@ class SeriesGraph: ObservableObject {
     
     var earliestDate: String {
         let dateData = graphableData.compactMap { $0.date }
-        //Calendar.current.dateComponents([.day, .year, .month], from: date)
         if let minDate = dateData.min() {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMMM yyyy"
@@ -58,7 +57,6 @@ class SeriesGraph: ObservableObject {
     
     var latestDate: String {
         let dateData = graphableData.compactMap { $0.date }
-        //Calendar.current.dateComponents([.day, .year, .month], from: date)
         if let maxDate = dateData.max() {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMMM yyyy"
@@ -80,7 +78,6 @@ class SeriesGraph: ObservableObject {
     func selectDataPoints(_ data: [String], n: Int) -> [String] {
         let count = data.count
         let stride = Double(count) / Double(n)
-        //var index = 0
         var result: [String] = []
         
         for i in 0..<n {

@@ -12,19 +12,28 @@ struct SeriesSelectionView: View {
     
     var body: some View {
         NavigationView {
-                if allSeriesDataStore.listData.count == 0 {
-                    ProgressView()
-                        .controlSize(.large)
-                        .navigationTitle("US Economic Data")
-                }
-                else {
-                    List(allSeriesDataStore.listData) { series in
-                        NavigationLink(destination: SeriesDetailView(seriesData: SeriesGraph(rawDataSeries: series))) {
-                            seriesListItem(ticker: series.ticker, description: series.description)
-                        }
-                    }
+            if allSeriesDataStore.fetchState == .loading {
+                ProgressView()
+                    .controlSize(.large)
                     .navigationTitle("US Economic Data")
+            }
+            else if allSeriesDataStore.fetchState == .failure {
+                VStack {
+                    Text("Unable to fetch data")
+                        .navigationTitle("US Economic Data")
+                    Button("Try again") {
+                        allSeriesDataStore.fetchData()
+                    }
                 }
+            }
+            else {
+                List(allSeriesDataStore.listData) { series in
+                    NavigationLink(destination: SeriesDetailView(seriesData: SeriesGraph(rawDataSeries: series))) {
+                        seriesListItem(ticker: series.ticker, description: series.description)
+                    }
+                }
+                .navigationTitle("US Economic Data")
+            }
             
         }
     }
