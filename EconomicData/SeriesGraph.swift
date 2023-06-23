@@ -68,24 +68,24 @@ class SeriesGraph: ObservableObject {
 
     var xAxisStrings: [String] {
         let dateStrings = graphableData.map { $0.dateString }
-        // select 5 data points from the strings
-        let dataPoints =  selectDataPoints(dateStrings, n: 5)
-        // drop the first data point and keep the other 4 since the first is not needed
-        return Array(dataPoints.dropFirst())
+        // select 4 data points from the strings
+        let dataPoints =  selectDataPoints(dateStrings, n: 4)
+        
+        return dataPoints
     }
     
-    // select n points of data from the input. Will select  data[0] + (n - 1) items spaced out evenly.
+    // extracts specific data points from input array at regular intervals determined by the value of n.
     func selectDataPoints(_ data: [String], n: Int) -> [String] {
         let count = data.count
-        let stride = Double(count) / Double(n)
+        let stride = count / (n + 1)
         var result: [String] = []
         
-        for i in 0..<n {
-            let newIndex = Int(Double(i) * stride)
-            if newIndex >= count {
+        for i in 1...n {
+            let index = i * stride
+            if index >= count {
                 break
             }
-            result.append(data[newIndex])
+            result.append(data[index])
         }
         
         return result
